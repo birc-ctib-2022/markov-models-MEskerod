@@ -2,6 +2,7 @@
 
 
 import numpy as np
+from math import log 
 
 
 class MarkovModel:
@@ -31,4 +32,26 @@ def likelihood(x: list[int], mm: MarkovModel) -> float:
     This is the same as the probability of x given mm,
     i.e., P(x ; mm).
     """
-    ...  # FIXME: implement this
+    if not x:
+        return 1
+    
+    i = 1
+    probability = mm.init_probs[x[0]]
+    while i < len(x):
+        probability *= mm.trans[x[i-1]][x[i]]
+        i += 1 
+    return probability
+
+def log_likelihood(x: list[int], mm: MarkovModel) -> float:
+    """
+    Computes the log likelihood of mm given x
+    """
+    if not x:
+        return log(1)
+    
+    i = 1
+    probability = log(mm.init_probs[x[0]])
+    while i < len(x):
+        probability += log(mm.trans[x[i-1]][x[i]])
+        i += 1 
+    return probability
